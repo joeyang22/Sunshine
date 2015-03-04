@@ -1,9 +1,11 @@
 package me.joeyang.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -62,8 +64,7 @@ public class ForecastFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            FetchWeatherTask task = new FetchWeatherTask();
-            task.execute("Toronto");
+            updateWeather();
             return true;
         }
 
@@ -97,8 +98,21 @@ public class ForecastFragment extends Fragment {
         return rootView;
     }
 
+    //Starts the task for updating weather
+    private void updateWeather(){
+        FetchWeatherTask task = new FetchWeatherTask();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String locationPreference = preferences.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
+        task.execute(locationPreference);
+    }
 
-
+    public void onStart(){
+        super.onStart();
+        updateWeather();
+    }
+    private double celsiusToFahrenheit(double temperature){
+        return temperature*(9.0/5.0)+32.0;
+    }
     public class FetchWeatherTask extends AsyncTask <String, Void, String[]>{
 
         private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
@@ -109,8 +123,14 @@ public class ForecastFragment extends Fragment {
             return shortenedDateTime.format(time);
         }
 
+
         //Formats High/Low temperature
         private String formatHighLows(double high, double low){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            if (preferences.getString(getString(R.string.pref_units_key),getString(R.string.pref_units_metric)).equals(getString(R.string.pref_units_imperial))){
+                high = celsiusToFahrenheit(high);
+                low = celsiusToFahrenheit(low);
+            }
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
 

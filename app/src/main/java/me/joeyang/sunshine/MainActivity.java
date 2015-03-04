@@ -1,14 +1,20 @@
 package me.joeyang.sunshine;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MainActivity extends ActionBarActivity {
-
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -35,15 +41,36 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings){
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
+        }
+        else if(id == R.id.action_map){
+            openPreferredLocationInMap();
+
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
+    private void openPreferredLocationInMap() {
+        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(this);
+        String mapPreference = preference.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+        Uri.Builder builder = new Uri.Builder();
+        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
+                .appendQueryParameter("q",mapPreference)
+                .build();
+        mapIntent.setData(geoLocation);
+        if (mapIntent.resolveActivity(getPackageManager())!=null){
+            startActivity(mapIntent);
+        }else{
+            Log.d(LOG_TAG, "Could not resolve the intent");
+        }
+
+
+
+    }
 
 }
