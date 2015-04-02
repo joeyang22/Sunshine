@@ -36,6 +36,8 @@
         <provider
             android:authorities="me.joeyang.sunshine"
             android:name=".data.WeatherProvider"
+            android:enabled = "true"
+            android:exported="true"
         />
     </application>
 
