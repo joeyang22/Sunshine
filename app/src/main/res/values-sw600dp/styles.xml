@@ -1,0 +1,9 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Base application theme. -->
+    <style name="ForecastListStyle">
+        <!-- Customize your theme here. -->
+        <item name="android:choiceMode">singleChoice</item>
+    </style>
+
+</resources>
