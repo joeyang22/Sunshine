@@ -154,15 +154,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             );
         }
         return null;
-        // Now create and return a CursorLoader that will take care of
-        // creating a Cursor for the data being displayed.
 
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.v(LOG_TAG, "In onLoadFinished");
+        Log.v("AAAAA", "In onLoadFinished");
         if (data!=null && data.moveToFirst()) {
+
             int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
 
             long dateInMillis = data.getLong(COL_WEATHER_DATE);

@@ -17,6 +17,7 @@ import android.widget.TextView;
 public class ForecastAdapter extends CursorAdapter {
     public int VIEW_TYPE_TODAY = 0;
     public int VIEW_TYPE_FUTURE_DAY = 1;
+    private boolean mUseTodayLayout;
     public ForecastAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
@@ -46,9 +47,13 @@ public class ForecastAdapter extends CursorAdapter {
 //                " - " + highAndLow;
 //    }
 
+    public void setUseTodayLayout(boolean useTodayLayout){
+        mUseTodayLayout = useTodayLayout;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        return (position == 0)? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+        return (position == 0 && mUseTodayLayout)? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
     }
 
     @Override
@@ -63,11 +68,13 @@ public class ForecastAdapter extends CursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         int viewType = getItemViewType(cursor.getPosition());
         int layoutId = -1;
+
         if (viewType ==0){
             layoutId = R.layout.list_item_forecast_today;
-        }else{
+        }else if (viewType==1){
             layoutId = R.layout.list_item_forecast;
         }
+
         View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
