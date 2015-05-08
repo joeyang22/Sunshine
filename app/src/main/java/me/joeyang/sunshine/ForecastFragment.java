@@ -21,6 +21,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import me.joeyang.sunshine.data.WeatherContract;
+import me.joeyang.sunshine.sync.SunshineSyncAdapter;
 
 /**
  * Created by Joe Yang on 2/25/2015.
@@ -66,7 +67,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private boolean mUseTodayLayout = true;
 
-    private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
+
+    private final String LOG_TAG = ForecastFragment.class.getSimpleName();
 
     public interface Callback {
         /**
@@ -142,11 +144,20 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     //Starts the task for updating weather
-    private void updateWeather(){
-        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
-        String location = Utility.getPreferredLocation(getActivity());
-        weatherTask.execute(location);
+    private void updateWeather() {
+//        Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
+//        alarmIntent.putExtra(SunshineService.LOCATION_QUERY_EXTRA, Utility.getPreferredLocation(getActivity()));
+//
+//        //Wrap in a pending intent which only fires once.
+//        PendingIntent pi = PendingIntent.getBroadcast(getActivity(), 0,alarmIntent,PendingIntent.FLAG_ONE_SHOT);//getBroadcast(context, 0, i, 0);
+//
+//        AlarmManager am=(AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+//
+//        //Set the AlarmManager to wake up the system.
+//        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi);
+        SunshineSyncAdapter.syncImmediately(getActivity());
     }
+
 
 
     private double celsiusToFahrenheit(double temperature){
